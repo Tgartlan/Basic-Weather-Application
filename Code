@@ -1,0 +1,36 @@
+import requests  # Import the requests library for making HTTP requests
+
+api_key = "fa53cc9ecca65f489bcd5e7ebd502d30"  # API key for accessing OpenWeatherMap API
+
+# Function to get weather information for a location
+def get_weather():
+    while True:
+        user_input = input("Enter Location: ")  # Prompt user to enter a location
+
+        # Make a GET request to OpenWeatherMap API to retrieve weather data for the input location
+        weather_data = requests.get(f'http://api.openweathermap.org/data/2.5/weather?q={user_input}&units=imperial&appid={api_key}')
+
+        # Check if the location is invalid (HTTP status code 404)
+        if weather_data.json().get('cod') == '404':
+            print("Invalid Location")  # Display error message for invalid location
+            continue  # Continue the loop to prompt the user for another location
+
+        break  # Break the loop if a valid location is entered
+
+    # Extract relevant weather information from the JSON response
+    description = weather_data.json()['weather'][0]['description']  # Description of weather conditions
+    temp = round(weather_data.json()['main']['temp'])  # Current temperature
+    feels_like = round(weather_data.json()['main']['feels_like'])  # Temperature feels like
+    high = round(weather_data.json()['main']['temp_max'])  # Maximum temperature
+    low = round(weather_data.json()['main']['temp_min'])  # Minimum temperature
+
+    # Display the weather information for the location
+    print(f"The weather in {user_input} is {description} and the temperature is {temp}F. It feels like {feels_like}F. The high today is {high}F. and the low is {low}F.")
+
+# Main program loop
+while True:
+    get_weather()  # Call the get_weather function to retrieve weather information for a location
+    choice = input("Do you want to check another location? (yes/no): ")  # Ask user if they want to check another location
+    if choice.lower() != 'yes':  # If user doesn't want to check another location, exit the loop
+        break
+
